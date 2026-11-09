@@ -1,0 +1,41 @@
+module: ToDoListManager
+
+non_functional_requirements:
+  - id: NFR-1
+    desc: "Идентификаторы задач уникальны в пределах одного списка"
+  - id: NFR-2
+    desc: "Статус задачи: только 'Не выполнена' или 'Выполнена'"
+  - id: NFR-3
+    desc: "Операции не нарушают целостность данных"
+
+methods:
+  - name: AddTask
+    req_functional: ["1"]
+    req_non_functional: ["NFR-1", "NFR-2", "NFR-3"]
+    signature: "void AddTask(string description)"
+    pre: "description != null && !string.IsNullOrWhiteSpace(description)"
+    post: "Создана задача с новым уникальным ID, Status = 'Не выполнена'"
+    equivalence_classes:
+      - case: "Валидное описание"
+        inputs: ["Написать отчёт"]
+        expected: "Задача добавлена"
+      - case: "Пустая строка"
+        inputs: [""]
+        expected: "ArgumentException"
+      - case: "Null"
+        inputs: ["null"]
+        expected: "ArgumentNullException"
+
+  - name: RemoveTask
+    req_functional: ["2"]
+    req_non_functional: ["NFR-3"]
+    signature: "void RemoveTask(int id)"
+    pre: "true"
+    post: "id существует -> задача удалена"
+    equivalence_classes:
+      - case: "Существующий ID"
+        inputs: [1]
+        expected: "Задача удалена"
+      - case: "Несуществующий ID"
+        inputs: [999]
+        expected: "Состояние системы не изменилось"
